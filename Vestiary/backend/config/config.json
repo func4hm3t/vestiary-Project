@@ -1,0 +1,47 @@
+{
+  "development": {
+    "username": "sa",      
+    "password": "ahmet2003CC",         
+    "database": "Vestiary",
+    "host": "localhost",
+    "port": 1433,
+    "dialect": "mssql",
+    "dialectOptions": {
+      "options": {
+        "instanceName": "SQLEXPRESS",
+        "encrypt": false,                     
+        "trustServerCertificate": true     
+      }
+    }
+  },
+  "test": {
+    "username": "sa",
+    "password": "ahmet2003CC",
+    "database": "Vestiary",
+    "host": "localhost",
+    "port": 1433,
+    "dialect": "mssql",
+    "dialectOptions": {
+      "options": {
+        "instanceName": "SQLEXPRESS",
+        "encrypt": false,
+        "trustServerCertificate": true
+      }
+    }
+  },
+  "production": {
+    "username": "sa",
+    "password": "ahmet2003CC",
+    "database": "Vestiary",
+    "host": "localhost",                 
+    "port": 1433,
+    "dialect": "mssql",
+    "dialectOptions": {
+      "options": {
+        "instanceName": "SQLEXPRESS",
+        "encrypt": true,                      
+        "trustServerCertificate": false
+      }
+    }
+  }
+}
