@@ -1,0 +1,64 @@
+<nav class="bg-[#caa26a] fixed w-full z-50 top-0 start-0 border-b border-gray-300">
+  <div class="max-w-screen-xl flex items-center justify-between mx-auto px-4 py-3">
+    <!-- Logo -->
+    <a [routerLink]="['/']" routerLinkActive="router-link-active"
+      class="flex items-center space-x-3 no-underline hove:no-underline">
+      <img src="assets/img/logoTransparan.png" class="h-14" alt="Vestiary logo">
+      <span class="text-xl font-semibold text-white">Vestiary</span>
+    </a>
+
+    <!-- Ortadaki navigasyon ikonları -->
+    <div class="hidden md:flex items-center space-x-8">
+      <a [routerLink]="['/about']" routerLinkActive="router-link-active">
+        <img src="assets/img/about-logo.png" class="h-12" alt="about-logo">
+      </a>
+      <a [routerLink]="['/men']" routerLinkActive="router-link-active">
+        <img src="assets/img/erkek-logo-alisveris.png" class="h-12" alt="erkek-logo">
+      </a>
+      <a [routerLink]="['/women']" routerLinkActive="router-link-active">
+        <img src="assets/img/kadin-logo-alisveris.png" class="h-12" alt="kadın-logo">
+      </a>
+    </div>
+
+   <!-- Sağ ikonlar ve kullanıcı durumu -->
+    <div class="flex items-center space-x-3">
+      <!-- 1) Giriş yapılmamışsa Giriş ikonu -->
+      <button *ngIf="!auth.isLogged"
+              type="button"
+              class="p-1"
+              [routerLink]="['/login']">
+        <img src="assets/img/signin-logo.png"
+             alt="giris-logo"
+             class="h-12 w-12" />
+      </button>
+
+      <!-- 2) Giriş yapılmışsa kullanıcı adı + çıkış -->
+      <div *ngIf="auth.isLogged" class="flex items-center space-x-4 text-white">
+        <span>Hoşgeldin, <strong>{{ auth.username }}</strong>!</span>
+        <button (click)="logout()"
+                class="p-1">
+          <!-- logout için özel bir ikonunuz varsa ekleyin -->
+          <img src="assets/img/logout.png"
+               alt="cikis"
+               class="h-10 w-10" />
+        </button>
+      </div>
+
+      <!-- Ortak ikonlar her durumda görünsün -->
+      <button type="button" class="p-1"
+              [routerLink]="['/favorites']"
+              routerLinkActive="router-link-active">
+        <img src="assets/img/favoriler-logo.png"
+             alt="favoriler-logo"
+             class="h-12 w-12" />
+      </button>
+      <button type="button" class="p-1"
+              [routerLink]="['/shopping']"
+              routerLinkActive="router-link-active">
+        <img src="assets/img/sepet-logo.png"
+             alt="sepet-logo"
+             class="h-12 w-12" />
+      </button>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,38 @@
+<!-- Giriş yapmamış kullanıcı -->
+<div *ngIf="showLoginPrompt" class="text-center mt-8">
+    <p>Favorileri görmek için lütfen
+        <a [routerLink]="['/login']" class="text-amber-600 underline">giriş yapın</a>.
+    </p>
+</div>
+
+<!-- Favori yoksa mesaj -->
+<div *ngIf="!showLoginPrompt && products.length === 0" class="text-center mt-8">
+    <p>Henüz favori eklemediniz.</p>
+</div>
+
+<!-- Favori ürün listesi -->
+<div *ngIf="!showLoginPrompt && products.length > 0" class="favorites-page">
+    <!-- Başlık -->
+    <div class="favorites-header">
+        <h2 class="favorites-title">Favori Ürünleriniz</h2>
+    </div>
+
+    <!-- Kartlar -->
+    <div class="favorites-container mt-2">
+        <div *ngFor="let product of products" class="favorite-card">
+            <img *ngIf="product.ImageUrl" [src]="product.ImageUrl" alt="{{ product.Title }}" class="favorite-image" />
+            <div class="card-body">
+                <h5 class="card-title">{{ product.Title }}</h5>
+                <p class="card-price">{{ product.Price | number:'1.0-0' }}₺</p>
+            </div>
+            <div class="action-buttons">
+                <button (click)="addToCart(product)">
+                    <img src="assets/img/sepet.png" alt="Sepete ekle" />
+                </button>
+                <button (click)="removeFavorite(product)">
+                    <img src="assets/img/favorieksi.png" alt="Favoriden çıkar" />
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

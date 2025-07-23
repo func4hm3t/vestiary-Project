@@ -1,0 +1,44 @@
+<!-- Sepeti görebilmek için giriş kontrolü -->
+<div *ngIf="showLoginPrompt" class="text-center mt-8">
+    <p>Sepeti görmek için lütfen
+        <a [routerLink]="['/login']" class="text-amber-600 underline">giriş yapın</a>.
+    </p>
+</div>
+
+<!-- Sepet boşsa -->
+<div *ngIf="!showLoginPrompt && items.length === 0" class="text-center mt-8">
+    <p>Sepetinizde hiç ürün yok.</p>
+</div>
+
+<!-- Sepet doluysa -->
+<div *ngIf="!showLoginPrompt && items.length > 0" class="shopping-page">
+    <!-- SOL MENÜ -->
+    <aside class="cart-menu">
+        <h3>Sepetiniz ({{ items.length }} ürün)</h3>
+
+        <!-- Ürün listesi -->
+        <ul class="menu-items">
+            <li *ngFor="let p of items">
+                {{ p.Title }} — {{ p.Price | number:'1.0-0' }}₺
+            </li>
+        </ul>
+
+        <!-- Toplam tutar -->
+        <p class="menu-total">Toplam: {{ total | number:'1.0-0' }}₺</p>
+
+        <button class="checkout-btn" (click)="checkout()">Satın Al</button>
+    </aside>
+    <!-- SAĞ ÜRÜN LİSTESİ -->
+    <main class="cart-list">
+        <div *ngFor="let p of items" class="cart-item">
+            <img *ngIf="p.ImageUrl" [src]="p.ImageUrl" alt="{{ p.Title }}" class="item-image" />
+            <div class="item-info">
+                <h4 class="item-title">{{ p.Title }}</h4>
+                <p class="item-price">{{ p.Price | number:'1.0-0' }}₺</p>
+            </div>
+            <button class="remove-btn" (click)="removeFromCart(p)">
+                <img src="assets/img/sepeteksi.png" alt="Çıkar" />
+            </button>
+        </div>
+    </main>
+</div>

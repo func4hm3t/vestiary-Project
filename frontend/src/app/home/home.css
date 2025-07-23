@@ -1,0 +1,4 @@
+/* Eğer ekstra responsive ince ayar gerekirse buraya ekleyin */
+@media (min-width: 768px) {
+  /* Tailwind arbitrary sınıfı ile zaten çalışıyor, ekstra CSS gerekmez */
+}

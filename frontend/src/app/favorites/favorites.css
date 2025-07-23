@@ -1,0 +1,80 @@
+/* Başlık kapsayıcısı: lacivert arka plan */
+.favorites-header {
+  background-color: #001f3f;   /* lacivert */
+  padding: 1rem 0;             /* üst-alt boşluk */
+}
+
+/* Başlık metni: beyaz ve ortalı */
+.favorites-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.5rem;           /* ≈24px */
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Grid layout ve kart stili (önceki kurallarınız) */
+.favorites-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+  gap: 1rem;
+  padding: 0 1rem 1rem;
+}
+
+.favorite-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0;
+  width: 288px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.favorite-image {
+  width: 100%;
+  height: 384px;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.card-body {
+  padding: 0.5rem 1rem;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-price {
+  margin: 0.25rem 0 0;
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+.action-buttons {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-buttons button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.action-buttons img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}

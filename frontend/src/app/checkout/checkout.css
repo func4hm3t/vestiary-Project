@@ -1,0 +1,49 @@
+.checkout-page {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+}
+
+.checkout-title {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #001f3f;
+  text-align: center;
+}
+
+.checkout-items {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+
+.checkout-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.item-name { color: #1f2937; }
+.item-price { color: #4b5563; }
+
+.checkout-total {
+  text-align: right;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.finish-btn {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  background: #001f3f;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+.finish-btn:hover {
+  background: #003366;
+}

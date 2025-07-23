@@ -1,0 +1,17 @@
+<!-- src/app/checkout/checkout.component.html -->
+<div class="checkout-page">
+  <h2 class="checkout-title">Sipariş Özeti</h2>
+
+  <ul class="checkout-items">
+    <li *ngFor="let p of items" class="checkout-item">
+      <span class="item-name">{{ p.Title }}</span>
+      <span class="item-price">{{ p.Price | number:'1.0-0' }}₺</span>
+    </li>
+  </ul>
+
+  <div class="checkout-total">
+    Toplam Tutar: <strong>{{ total | number:'1.0-0' }}₺</strong>
+  </div>
+
+  <button class="finish-btn" (click)="finish()">Onayla ve Bitir</button>
+</div>
