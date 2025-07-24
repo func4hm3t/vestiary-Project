@@ -72,3 +72,21 @@ AS
   FROM dbo.Products P
   JOIN inserted i ON P.Id = i.Id;
 GO
+
+ALTER TABLE dbo.Products
+  ADD 
+    Beden NVARCHAR(10) NULL,
+    Renk  NVARCHAR(30) NULL;
+GO
+
+ALTER TABLE dbo.ErkekProducts
+  ADD
+    Beden NVARCHAR(10) NULL,
+    Renk  NVARCHAR(30) NULL;
+GO
+
+ALTER TABLE dbo.KadinProducts
+  ADD
+    Beden NVARCHAR(10) NULL,
+    Renk  NVARCHAR(30) NULL;
+GO

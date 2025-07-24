@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { MenService, Product } from './men.service';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { MenService, Product } from './men.service';
 import { CartService } from '../services/cart.service';
 import { FavoriteService } from '../services/favorite.service';
 import { ToastService } from '../services/toast.service';
@@ -11,7 +10,8 @@ import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-men',
-  imports: [RouterModule, CommonModule],
+  standalone: true,
+  imports: [RouterModule, CommonModule, FormsModule],
   templateUrl: './men.html',
   styleUrls: ['./men.css'],
   encapsulation: ViewEncapsulation.None
@@ -22,26 +22,76 @@ export class Men implements OnInit {
   error: string | null = null;
   toastMessage: string | null = null;
 
-  constructor(private menService: MenService,
+  sizes: string[] = [];
+  filteredSizes: string[] = [];
+  selectedSizes: string[] = [];
+  sizeSearch = '';
+
+  colors: string[] = [];
+  filteredColors: string[] = [];
+  selectedColors: string[] = [];
+  colorSearch = '';
+
+  constructor(
+    private menService: MenService,
     private cartService: CartService,
     private favoriteService: FavoriteService,
-    private router: Router,
-    private toast: ToastService,
-    private auth: AuthService
+    private auth: AuthService,
   ) { }
 
   ngOnInit(): void {
-    this.menService.getProducts().subscribe({
-      next: (data) => {
-        this.products = data;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('ürün yükleme hatası', err);
-        this.error = 'ürünler yüklenmedi';
-        this.loading = false;
-      }
-    })
+    // Beden ve renk seçeneklerini çek
+    this.menService.getSizes().subscribe(s => {
+      this.sizes = s;
+      this.filteredSizes = [...s];
+    });
+    this.menService.getColors().subscribe(c => {
+      this.colors = c;
+      this.filteredColors = [...c];
+    });
+
+    // İlk yükleme (filtre yok)
+    this.loadProducts();
+  }
+
+  private loadProducts() {
+    this.loading = true;
+    this.menService
+      .getProducts(this.selectedSizes, this.selectedColors)
+      .subscribe({
+        next: prods => {
+          this.products = prods;
+          this.loading = false;
+        },
+        error: err => {
+          console.error('Ürün yükleme hatası', err);
+          this.error = 'Ürünler yüklenemedi';
+          this.loading = false;
+        }
+      });
+  }
+
+  // Arama kutularını filtrelemek için
+  onSizeSearchChange() {
+    const q = this.sizeSearch.toLowerCase();
+    this.filteredSizes = this.sizes.filter(s => s.toLowerCase().includes(q));
+  }
+
+  onColorSearchChange() {
+    const q = this.colorSearch.toLowerCase();
+    this.filteredColors = this.colors.filter(c => c.toLowerCase().includes(q));
+  }
+
+   // Checkbox tıklanınca seçimi değiştir, ardından listeyi yeniden yükle
+  onSizeToggle(size: string, checked: boolean) {
+    if (checked) this.selectedSizes.push(size);
+    else this.selectedSizes = this.selectedSizes.filter(s => s !== size);
+    this.loadProducts();
+  }
+  onColorToggle(color: string, checked: boolean) {
+    if (checked) this.selectedColors.push(color);
+    else this.selectedColors = this.selectedColors.filter(c => c !== color);
+    this.loadProducts();
   }
 
   isLoggedIn(): boolean {
@@ -49,32 +99,32 @@ export class Men implements OnInit {
   }
 
   toggleCart(product: Product): void {
-      if (!this.isLoggedIn()) {
-        this.showToast('🔒 Lütfen giriş yapınız');
-        return;
-      }
-      if (this.isInCart(product)) {
-        this.cartService.remove(product.Id);
-        this.showToast('🗑️ Sepetten çıkarıldı');
-      } else {
-        this.cartService.add(product);
-        this.showToast('🛒 Sepete eklendi');
-      }
+    if (!this.isLoggedIn()) {
+      this.showToast('🔒 Lütfen giriş yapınız');
+      return;
     }
+    if (this.isInCart(product)) {
+      this.cartService.remove(product.Id);
+      this.showToast('🗑️ Sepetten çıkarıldı');
+    } else {
+      this.cartService.add(product);
+      this.showToast('🛒 Sepete eklendi');
+    }
+  }
 
   toggleFavorite(product: Product): void {
-      if (!this.isLoggedIn()) {
-        this.showToast('🔒 Lütfen giriş yapınız');
-        return;
-      }
-      if (this.favoriteService.isFavorited(product.Id)) {
-        this.favoriteService.remove(product.Id);
-        this.showToast('💔 Favorilerden çıkarıldı');
-      } else {
-        this.favoriteService.add(product);
-        this.showToast('❤️ Favorilere eklendi');
-      }
+    if (!this.isLoggedIn()) {
+      this.showToast('🔒 Lütfen giriş yapınız');
+      return;
     }
+    if (this.favoriteService.isFavorited(product.Id)) {
+      this.favoriteService.remove(product.Id);
+      this.showToast('💔 Favorilerden çıkarıldı');
+    } else {
+      this.favoriteService.add(product);
+      this.showToast('❤️ Favorilere eklendi');
+    }
+  }
 
   isFavorite(product: Product): boolean {
     return this.favoriteService.isFavorited(product.Id);

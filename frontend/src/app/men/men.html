@@ -1,9 +1,9 @@
-<!-- LAYOUT: Sidebar ve Kartlar Yan Yana -->
+<!-- src/app/men/men.html -->
 <div class="flex">
   <!-- SIDEBAR -->
   <aside class="hidden lg:block w-64 bg-white border-r border-gray-200 p-4 overflow-auto"
-    style="max-height: calc(100vh - 64px);">
-    <!-- Her bir filter section detail/summary ile collapsible -->
+         style="max-height: calc(100vh - 64px);">
+    <!-- Kategori (statik örnek) -->
     <details class="mb-6" open>
       <summary
         class="flex justify-between items-center cursor-pointer font-semibold text-gray-800 hover:text-amber-600">
@@ -12,36 +12,33 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
       </summary>
-
       <div class="mt-4 space-y-4">
         <div class="relative text-gray-400">
           <input type="text" placeholder="Kategoride Ara"
-            class="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-amber-400" />
+                 class="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-amber-400" />
           <svg class="w-4 h-4 absolute left-2 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+                  d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
           </svg>
         </div>
-
         <ul class="space-y-2 text-sm text-gray-700">
           <li class="flex items-center">
-            <input id="cat-atlet" type="checkbox" class="w-4 h-4 text-amber-500 border-gray-300 rounded" />
+            <input id="cat-atlet" type="checkbox"
+                   class="w-4 h-4 text-amber-500 border-gray-300 rounded" />
             <label for="cat-atlet" class="ml-2 select-none">Atlet</label>
           </li>
           <li class="flex items-center">
-            <input id="cat-bermuda" type="checkbox" class="w-4 h-4 text-amber-500 border-gray-300 rounded" />
+            <input id="cat-bermuda" type="checkbox"
+                   class="w-4 h-4 text-amber-500 border-gray-300 rounded" />
             <label for="cat-bermuda" class="ml-2 select-none">Bermuda</label>
           </li>
-          <!-- diğer kategoriler... -->
         </ul>
-
-        <button class="text-xs font-medium text-amber-600 hover:underline">
-          + Daha fazla göster
-        </button>
+        <button class="text-xs font-medium text-amber-600 hover:underline">+ Daha fazla göster</button>
       </div>
     </details>
 
-    <details class="mb-6">
+    <!-- Beden filtresi -->
+    <details class="mb-6" open>
       <summary
         class="flex justify-between items-center cursor-pointer font-semibold text-gray-800 hover:text-amber-600">
         <span>Beden</span>
@@ -51,31 +48,30 @@
       </summary>
       <div class="mt-4 space-y-4">
         <div class="relative text-gray-400">
-          <input type="text" placeholder="Beden Ara"
-            class="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-amber-400" />
+          <input type="text" placeholder="Beden ara"
+                 [(ngModel)]="sizeSearch"
+                 (ngModelChange)="onSizeSearchChange()"
+                 class="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-amber-400" />
           <svg class="w-4 h-4 absolute left-2 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+                  d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
           </svg>
         </div>
         <ul class="space-y-2 text-sm text-gray-700">
-          <li class="flex items-center">
-            <input id="size-xs" type="checkbox" class="w-4 h-4 text-amber-500 border-gray-300 rounded" />
-            <label for="size-xs" class="ml-2 select-none">XS</label>
+          <li *ngFor="let s of filteredSizes" class="flex items-center">
+            <input type="checkbox" #sizeBox
+                   class="w-4 h-4 text-amber-500 border-gray-300 rounded"
+                   [checked]="selectedSizes.includes(s)"
+                   (change)="onSizeToggle(s, sizeBox.checked)" />
+            <label class="ml-2 select-none">{{ s }}</label>
           </li>
-          <li class="flex items-center">
-            <input id="size-s" type="checkbox" class="w-4 h-4 text-amber-500 border-gray-300 rounded" />
-            <label for="size-s" class="ml-2 select-none">S</label>
-          </li>
-          <!-- diğer bedenler... -->
         </ul>
-        <button class="text-xs font-medium text-amber-600 hover:underline">
-          + Daha fazla göster
-        </button>
+        <button class="text-xs font-medium text-amber-600 hover:underline">+ Daha fazla göster</button>
       </div>
     </details>
 
-    <details class="mb-4">
+    <!-- Renk filtresi -->
+    <details class="mb-6">
       <summary
         class="flex justify-between items-center cursor-pointer font-semibold text-gray-800 hover:text-amber-600">
         <span>Renk</span>
@@ -83,12 +79,32 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
       </summary>
-      <div class="mt-4">
-        <!-- Renk kutucukları, radio butonlar veya checkboxlar -->
+      <div class="mt-4 space-y-4">
+        <div class="relative text-gray-400">
+          <input type="text" placeholder="Renk ara"
+                 [(ngModel)]="colorSearch"
+                 (ngModelChange)="onColorSearchChange()"
+                 class="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-amber-400" />
+          <svg class="w-4 h-4 absolute left-2 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+          </svg>
+        </div>
+        <ul class="space-y-2 text-sm text-gray-700">
+          <li *ngFor="let c of filteredColors" class="flex items-center">
+            <input type="checkbox" #colorBox
+                   class="w-4 h-4 text-amber-500 border-gray-300 rounded"
+                   [checked]="selectedColors.includes(c)"
+                   (change)="onColorToggle(c, colorBox.checked)" />
+            <label class="ml-2 select-none">{{ c }}</label>
+          </li>
+        </ul>
+        <button class="text-xs font-medium text-amber-600 hover:underline">+ Daha fazla göster</button>
       </div>
     </details>
 
-    <details class="mb-4">
+    <!-- Fiyat filtresi (örnek statik) -->
+    <details class="mb-6">
       <summary
         class="flex justify-between items-center cursor-pointer font-semibold text-gray-800 hover:text-amber-600">
         <span>Fiyat</span>
@@ -96,12 +112,14 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
       </summary>
-      <div class="mt-4">
-        <!-- Örn. iki input aralığı -->
+      <div class="mt-4 space-y-2">
+        <input type="number" placeholder="Min ₺" class="w-full p-2 border rounded" />
+        <input type="number" placeholder="Max ₺" class="w-full p-2 border rounded" />
       </div>
     </details>
 
-    <details class="mb-4">
+    <!-- Kalıp filtresi (örnek statik) -->
+    <details>
       <summary
         class="flex justify-between items-center cursor-pointer font-semibold text-gray-800 hover:text-amber-600">
         <span>Kalıp</span>
@@ -110,56 +128,57 @@
         </svg>
       </summary>
       <div class="mt-4">
-        <!-- İçerik -->
+        <!-- Burayı ihtiyaçlarınıza göre doldurabilirsiniz -->
+        <label class="block"><input type="checkbox" /> Slim</label>
+        <label class="block"><input type="checkbox" /> Regular</label>
       </div>
     </details>
   </aside>
 
-  <!-- CONTENT: Kartların bulunduğu alan -->
-  <main class="flex-1 p-4">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <div *ngFor="let product of products" class="relative bg-white border border-gray-200 rounded-none w-72 mx-auto">
-        <!-- Ürün Resmi -->
-        <img *ngIf="product.ImageUrl" [src]="product.ImageUrl" alt="{{ product.Title }}"
-          class="w-full h-96 object-cover rounded-none" />
+  <!-- MAIN CONTENT -->
+  <!-- main içeriği -->
+<main class="flex-1 p-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div *ngFor="let product of products"
+         class="relative bg-white border border-gray-200 rounded-none w-72 mx-auto">
+      <!-- Ürün görüntüsü -->
+      <img *ngIf="product.ImageUrl"
+           [src]="product.ImageUrl"
+           alt="{{ product.Title }}"
+           class="w-full h-96 object-cover rounded-none" />
 
-        <!-- Başlık & Fiyat -->
-        <div class="px-4 py-2">
-          <p class="text-base font-medium text-gray-800 truncate">
-            {{ product.Title }}
-          </p>
-          <p class="text-base text-gray-600">
-            {{ product.Price | number:'1.0-0' }}₺
-          </p>
-        </div>
+      <!-- Başlık & Fiyat -->
+      <div class="px-4 py-2">
+        <p class="text-base font-medium text-gray-800 truncate">{{ product.Title }}</p>
+        <p class="text-base text-gray-600">{{ product.Price | number:'1.0-0' }}₺</p>
+      </div>
 
-        <!-- Sağ-alt köşe butonlar -->
-        <!-- Butonlar grubu -->
-        <div class="absolute bottom-5 right-4 flex space-x-2">
-          <button type="button" (click)="toggleCart(product)" [class.opacity-50]="!isLoggedIn()"
-            class="w-15 h-15 bg-white flex items-center justify-center hover:bg-gray-50">
-            <img [src]="
-      isInCart(product)
-        ? 'assets/img/sepetdolu.png'
-        : 'assets/img/sepet.png'
-    " alt="Sepet durumu" class="w-6 h-6 object-contain" />
-          </button>
-
-          <button type="button" (click)="toggleFavorite(product)" [class.opacity-50]="!isLoggedIn()"
-            class="w-15 h-15 bg-white flex items-center justify-center hover:bg-gray-50">
-            <img [src]="
-    isFavorite(product)
-      ? 'assets/img/favoridolu.png'
-      : 'assets/img/favori.png'
-  " alt="Favori durumu" class="w-6 h-6 object-contain" />
-          </button>
-        </div>
+      <!-- Sağ-alt köşe butonlar -->
+      <div class="absolute bottom-5 right-4 flex space-x-2">
+        <button type="button" (click)="toggleCart(product)"
+                [class.opacity-50]="!isLoggedIn()"
+                class="w-15 h-15 bg-white flex items-center justify-center hover:bg-gray-50">
+          <img [src]="isInCart(product) ? 'assets/img/sepetdolu.png' : 'assets/img/sepet.png'"
+               alt="Sepet durumu"
+               class="w-6 h-6 object-contain" />
+        </button>
+        <button type="button" (click)="toggleFavorite(product)"
+                [class.opacity-50]="!isLoggedIn()"
+                class="w-15 h-15 bg-white flex items-center justify-center hover:bg-gray-50">
+          <img [src]="isFavorite(product) ? 'assets/img/favoridolu.png' : 'assets/img/favori.png'"
+               alt="Favori durumu"
+               class="w-6 h-6 object-contain" />
+        </button>
       </div>
     </div>
-  </main>
+  </div>
+</main>
+
 </div>
 
-<div *ngIf="toastMessage" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none">
+<!-- TOAST MESAJ -->
+<div *ngIf="toastMessage"
+     class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none">
   <div class="bg-blue-900 text-white px-6 py-2 rounded-md shadow-lg">
     {{ toastMessage }}
   </div>

@@ -50,32 +50,34 @@
         </svg>
       </summary>
       <div class="mt-4 space-y-4">
+        <!-- Arama kutusu -->
         <div class="relative text-gray-400">
           <input type="text" placeholder="Beden Ara"
-            class="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-amber-400" />
+            class="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-amber-400"
+            [(ngModel)]="sizeSearch" (ngModelChange)="onSizeSearchChange()" />
           <svg class="w-4 h-4 absolute left-2 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
           </svg>
         </div>
+
+        <!-- Checkbox listesi -->
         <ul class="space-y-2 text-sm text-gray-700">
-          <li class="flex items-center">
-            <input id="size-xs" type="checkbox" class="w-4 h-4 text-amber-500 border-gray-300 rounded" />
-            <label for="size-xs" class="ml-2 select-none">XS</label>
+          <li *ngFor="let b of filteredSizes" class="flex items-center">
+            <input [id]="'size-' + b" type="checkbox" #sizeCheckbox
+              class="w-4 h-4 text-amber-500 border-gray-300 rounded" [checked]="selectedSizes.includes(b)"
+              (change)="onSizeToggle(b, sizeCheckbox.checked)" />
+            <label [for]="'size-' + b" class="ml-2 select-none">{{ b }}</label>
           </li>
-          <li class="flex items-center">
-            <input id="size-s" type="checkbox" class="w-4 h-4 text-amber-500 border-gray-300 rounded" />
-            <label for="size-s" class="ml-2 select-none">S</label>
-          </li>
-          <!-- diğer bedenler... -->
         </ul>
+
         <button class="text-xs font-medium text-amber-600 hover:underline">
           + Daha fazla göster
         </button>
       </div>
     </details>
 
-    <details class="mb-4">
+    <details class="mb-6">
       <summary
         class="flex justify-between items-center cursor-pointer font-semibold text-gray-800 hover:text-amber-600">
         <span>Renk</span>
@@ -83,21 +85,31 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
       </summary>
-      <div class="mt-4">
-        <!-- Renk kutucukları, radio butonlar veya checkboxlar -->
-      </div>
-    </details>
+      <div class="mt-4 space-y-4">
+        <!-- Arama kutusu -->
+        <div class="relative text-gray-400">
+          <input type="text" placeholder="Renk Ara"
+            class="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-amber-400"
+            [(ngModel)]="colorSearch" (ngModelChange)="onColorSearchChange()" />
+          <svg class="w-4 h-4 absolute left-2 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+          </svg>
+        </div>
 
-    <details class="mb-4">
-      <summary
-        class="flex justify-between items-center cursor-pointer font-semibold text-gray-800 hover:text-amber-600">
-        <span>Fiyat</span>
-        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-      </summary>
-      <div class="mt-4">
-        <!-- Örn. iki input aralığı -->
+        <!-- Checkbox listesi -->
+        <ul class="space-y-2 text-sm text-gray-700">
+          <li *ngFor="let c of filteredColors" class="flex items-center">
+            <input [id]="'color-' + c" type="checkbox" #colorCheckbox
+              class="w-4 h-4 text-amber-500 border-gray-300 rounded" [checked]="selectedColors.includes(c)"
+              (change)="onColorToggle(c, colorCheckbox.checked)" />
+            <label [for]="'color-' + c" class="ml-2 select-none">{{ c }}</label>
+          </li>
+        </ul>
+
+        <button class="text-xs font-medium text-amber-600 hover:underline">
+          + Daha fazla göster
+        </button>
       </div>
     </details>
 
