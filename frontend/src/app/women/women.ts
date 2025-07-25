@@ -44,13 +44,25 @@ export class Women implements OnInit {
 
   ngOnInit(): void {
 
-    this.womenService.getSizes().subscribe(s => {
-      this.sizes = s;
-      this.filteredSizes = [...s];
+    this.womenService.getSizes().subscribe(rawSizes => {
+      // 1) Her bir string'i virgülden parçala, 
+      // 2) boşlukları kırp, 
+      // 3) düzleştir (flat), 
+      // 4) Set ile tekilleştir
+      const all = rawSizes
+        .flatMap(s => s.split(','))
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+      this.sizes = Array.from(new Set(all));
+      this.filteredSizes = [...this.sizes];
     });
-    this.womenService.getColors().subscribe(c => {
-      this.colors = c;
-      this.filteredColors = [...c];
+    this.womenService.getColors().subscribe(rawColors => {
+      const all = rawColors
+        .flatMap(c => c.split(','))
+        .map(c => c.trim())
+        .filter(c => c.length > 0);
+      this.colors = Array.from(new Set(all));
+      this.filteredColors = [...this.colors];
     });
 
     this.loadProducts();

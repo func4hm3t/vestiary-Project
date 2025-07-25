@@ -1,7 +1,7 @@
 // models/KadinProduct.js
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define(
-    'kadinProduct',
+    'kadinProducts',
     {
       Id: {
         type: DataTypes.UUID,
@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     {
-      tableName:  'KadinProduct',
+      tableName:  'KadinProducts',
       timestamps: true,
       createdAt:  'CreatedAt',
       updatedAt:  'UpdatedAt'

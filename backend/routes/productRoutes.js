@@ -48,11 +48,33 @@ router.get('/:category', async (req, res, next) => {
     if (!Model) return res.status(400).json({ error: 'Geçersiz kategori' });
 
     const { beden, renk } = req.query;
-    const where = {};
-    if (beden) where.beden = beden;
-    if (renk) where.renk = renk;
+    const andClauses = [];
 
-    const items = await Model.findAll({ where });
+    // Çoklu beden filtresi
+    if (beden) {
+      const sizes = beden.split(',').map(s => s.trim()).filter(s => s);
+      andClauses.push({
+        [Op.or]: sizes.map(s => ({
+          beden: { [Op.like]: `%${s}%` }
+        }))
+      });
+    }
+
+    // Çoklu renk filtresi
+    if (renk) {
+      const colors = renk.split(',').map(c => c.trim()).filter(c => c);
+      andClauses.push({
+        [Op.or]: colors.map(c => ({
+          renk: { [Op.like]: `%${c}%` }
+        }))
+      });
+    }
+
+    const items = await Model.findAll({
+      where: andClauses.length
+        ? { [Op.and]: andClauses }
+        : {}  // filtre yoksa tüm kayıtlar
+    });
     return res.json(items);
   } catch (err) {
     next(err);

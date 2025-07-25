@@ -41,13 +41,25 @@ export class Men implements OnInit {
 
   ngOnInit(): void {
     // Beden ve renk seçeneklerini çek
-    this.menService.getSizes().subscribe(s => {
-      this.sizes = s;
-      this.filteredSizes = [...s];
+    this.menService.getSizes().subscribe(rawSizes => {
+      // 1) Her bir string'i virgülden parçala, 
+      // 2) boşlukları kırp, 
+      // 3) düzleştir (flat), 
+      // 4) Set ile tekilleştir
+      const all = rawSizes
+        .flatMap(s => s.split(','))
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+      this.sizes = Array.from(new Set(all));
+      this.filteredSizes = [...this.sizes];
     });
-    this.menService.getColors().subscribe(c => {
-      this.colors = c;
-      this.filteredColors = [...c];
+    this.menService.getColors().subscribe(rawColors => {
+      const all = rawColors
+        .flatMap(c => c.split(','))
+        .map(c => c.trim())
+        .filter(c => c.length > 0);
+      this.colors = Array.from(new Set(all));
+      this.filteredColors = [...this.colors];
     });
 
     // İlk yükleme (filtre yok)
@@ -82,7 +94,7 @@ export class Men implements OnInit {
     this.filteredColors = this.colors.filter(c => c.toLowerCase().includes(q));
   }
 
-   // Checkbox tıklanınca seçimi değiştir, ardından listeyi yeniden yükle
+  // Checkbox tıklanınca seçimi değiştir, ardından listeyi yeniden yükle
   onSizeToggle(size: string, checked: boolean) {
     if (checked) this.selectedSizes.push(size);
     else this.selectedSizes = this.selectedSizes.filter(s => s !== size);

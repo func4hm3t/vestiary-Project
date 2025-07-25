@@ -1,10 +1,10 @@
 // routes/authRoutes.js
 
-const express   = require('express');
-const bcrypt    = require('bcryptjs');
-const { Op }    = require('sequelize');
-const db        = require('../models');
-const User      = db.User;
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
+const db = require('../models');
+const User = db.User;
 
 const router = express.Router();
 
@@ -23,10 +23,10 @@ router.post('/signup', async (req, res) => {
     }
     const hash = await bcrypt.hash(password, 10);
     await User.create({
-      Username:     username,
-      Email:        email,
+      Username: username,
+      Email: email,
       PasswordHash: hash,
-      Role:         'user'
+      Role: 'user'
     });
     return res.status(201).json({ message: 'Kayıt başarılı.' });
   } catch (err) {
@@ -38,30 +38,19 @@ router.post('/signup', async (req, res) => {
 // Login
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  if (!username || !password) {
-    return res.status(400).send('Kullanıcı adı ve şifre gereklidir.');
+  const user = await User.findOne({ where: { Username: username } });
+  if (!user || !await bcrypt.compare(password, user.PasswordHash)) {
+    return res.status(401).json({ error: 'Geçersiz kullanıcı adı veya şifre.' });
   }
-  try {
-    const user = await User.findOne({ where: { Username: username } });
-    if (!user) {
-      return res.status(401).send('Geçersiz kullanıcı adı veya şifre.');
-    }
-    const match = await bcrypt.compare(password, user.PasswordHash);
-    if (!match) {
-      return res.status(401).send('Geçersiz kullanıcı adı veya şifre.');
-    }
-
-    // Session’a bilgileri koy
-    req.session.userId   = user.Id;
-    req.session.username = user.Username;
-    req.session.role     = user.Role;
-
-    // Başarılıysa dashboard’a yönlendir
-    return res.redirect('/dashboard');
-  } catch (err) {
-    console.error(err);
-    return res.status(500).send('Sunucu hatası.');
-  }
+  // başarı: session’ı set edelim
+  req.session.userId = user.Id;
+  req.session.username = user.Username;
+  req.session.role = user.Role;
+  // JSON ile dönüyoruz:
+  return res.json({
+    username: user.Username,
+    role: user.Role
+  });
 });
 
 module.exports = router;
