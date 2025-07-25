@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 3000;
 // Angular’ın çalıştığı origin’i burada belirtin:
 app.use(cors({
   origin: 'http://localhost:4200',
+  credentials: true
 }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

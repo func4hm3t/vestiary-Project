@@ -30,9 +30,10 @@ export class AuthService {
   }
 
   login(username: string, password: string) {
-    return this.http.post<{ username: string; role: string }>(
+   return this.http.post<{ token: string; username: string; role: string }>(
       `${this.baseUrl}/login`,
-      { username, password }
+      { username, password },
+      { withCredentials: true }
     );
   }
 
