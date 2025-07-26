@@ -34,6 +34,10 @@ store.sync();
 // 3) JSON API’yi mount et **statik’ten önce**
 console.log('⚙️ Mounting productRoutes at /api/products');
 const productRoutes = require('./routes/productRoutes');
+app.use('/api/products', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
 app.use('/api/products', productRoutes);
 
 console.log('⚙️ Mounting authRoutes at /auth');
@@ -57,9 +61,9 @@ app.post('/login', async (req, res) => {
     return res.redirect('/?error=2');          // yetkisiz kullanıcı
   }
   // artık admin onaylı:
-  req.session.userId   = user.Id;
+  req.session.userId = user.Id;
   req.session.username = user.Username;
-  req.session.role     = user.Role;
+  req.session.role = user.Role;
   return res.redirect('/dashboard');
 });
 
@@ -81,7 +85,6 @@ app.get('/logout', (req, res) => {
 
 // 8) DB sync & server start
 db.sequelize.authenticate()
-  .then(() => db.sequelize.sync())
   .then(() => {
     console.log('✅ DB bağlantısı ve sync başarılı');
     app.listen(PORT, () => console.log(`🚀 Sunucu ayağa kalktı: http://localhost:${PORT}`));

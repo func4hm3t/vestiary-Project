@@ -19,13 +19,15 @@ export class WomenService {
 
   constructor(private http: HttpClient) { }
 
-  getProducts(sizes: string[] = [], colors: string[] = []): Observable<Product[]> {
+  getProducts(sizes: string[] = [], colors: string[] = [],minPrice?:number, maxPrice?: number): Observable<Product[]> {
     let params = new HttpParams();
     if (sizes.length)  params = params.set('beden', sizes.join(','));
     if (colors.length) params = params.set('renk',  colors.join(','));
+    if (minPrice != null) params = params.set('minPrice', minPrice.toString());
+    if (maxPrice != null) params = params.set('maxPrice', maxPrice.toString());
     return this.http.get<Product[]>(
       `${this.baseUrl}/kadin`,
-      { params }
+      { params, withCredentials:true }
     );
   }
 

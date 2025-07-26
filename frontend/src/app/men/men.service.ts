@@ -23,22 +23,26 @@ export class MenService {
   // Erkek ürünleri listeler (opsiyonel filtre parametreleriyle)
   getProducts(
     sizes: string[] = [],
-    colors: string[] = []
+    colors: string[] = [],
+    minPrice?: number,
+    maxPrice?: number
   ): Observable<Product[]> {
     let params = new HttpParams();
-    if (sizes.length)  params = params.set('beden', sizes.join(','));
-    if (colors.length) params = params.set('renk',  colors.join(','));
+    if (sizes.length) params = params.set('beden', sizes.join(','));
+    if (colors.length) params = params.set('renk', colors.join(','));
+    if (minPrice != null) params = params.set('minPrice', minPrice.toString());
+    if (maxPrice != null) params = params.set('maxPrice', maxPrice.toString());
     return this.http.get<Product[]>(
       `${this.baseUrl}/erkek`,
-      { params }
+      { params, withCredentials:true }
     );
   }
 
- getSizes(): Observable<string[]> {
+  getSizes(): Observable<string[]> {
     return this.http.get<string[]>(`${this.baseUrl}/erkek/sizes`);
   }
 
- getColors(): Observable<string[]> {
+  getColors(): Observable<string[]> {
     return this.http.get<string[]>(`${this.baseUrl}/erkek/colors`);
   }
 }

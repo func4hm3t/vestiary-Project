@@ -32,6 +32,9 @@ export class Men implements OnInit {
   selectedColors: string[] = [];
   colorSearch = '';
 
+  minPrice?: number;
+  maxPrice?: number;
+
   constructor(
     private menService: MenService,
     private cartService: CartService,
@@ -66,14 +69,15 @@ export class Men implements OnInit {
     this.loadProducts();
   }
 
-  private loadProducts() {
+  public loadProducts() {
     this.loading = true;
     this.menService
-      .getProducts(this.selectedSizes, this.selectedColors)
+      .getProducts(this.selectedSizes, this.selectedColors, this.minPrice, this.maxPrice)
       .subscribe({
         next: prods => {
           this.products = prods;
           this.loading = false;
+
         },
         error: err => {
           console.error('Ürün yükleme hatası', err);
@@ -92,6 +96,15 @@ export class Men implements OnInit {
   onColorSearchChange() {
     const q = this.colorSearch.toLowerCase();
     this.filteredColors = this.colors.filter(c => c.toLowerCase().includes(q));
+  }
+
+  onMinPriceChange(val: string) {
+    this.minPrice = val ? +val : undefined;
+    this.loadProducts();
+  }
+  onMaxPriceChange(val: string) {
+    this.maxPrice = val ? +val : undefined;
+    this.loadProducts();
   }
 
   // Checkbox tıklanınca seçimi değiştir, ardından listeyi yeniden yükle

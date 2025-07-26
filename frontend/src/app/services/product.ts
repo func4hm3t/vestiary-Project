@@ -29,7 +29,7 @@ export class ProductService {
     let params = new HttpParams();
     if (beden) params = params.set('beden', beden);
     if (renk)  params = params.set('renk', renk);
-    return this.http.get<Product[]>(`${this.baseUrl}/${category}`, { params });
+    return this.http.get<Product[]>(`${this.baseUrl}/${category}`, { params, withCredentials:true });
   }
 
   /** Yalnızca distinct beden değerlerini döner */

@@ -33,6 +33,9 @@ export class Women implements OnInit {
   selectedColors: string[] = [];
   colorSearch = '';
 
+  minPrice?: number;
+  maxPrice?: number;
+
   constructor(
     private womenService: WomenService,
     private cartService: CartService,
@@ -75,7 +78,9 @@ export class Women implements OnInit {
     this.womenService
       .getProducts(
         this.selectedSizes,
-        this.selectedColors
+        this.selectedColors,
+        this.minPrice,
+        this.maxPrice
       )
 
       .subscribe({
@@ -89,6 +94,19 @@ export class Women implements OnInit {
           this.loading = false;
         }
       });
+  }
+
+  /** fiyat inputlarından çağrılacak metotlar */
+  onMinPriceChange(val: string) {
+    this.minPrice = val ? +val : undefined;
+  }
+  onMaxPriceChange(val: string) {
+    this.maxPrice = val ? +val : undefined;
+  }
+
+  /** butona basıldığında fiyat filtrelerini uygula */
+  applyPriceFilter() {
+    this.loadProducts();
   }
 
   // Arama kutularını filtrelemek için

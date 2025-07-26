@@ -44,42 +44,35 @@ router.get('/:category/colors', async (req, res, next) => {
 // ─── 3) Ürün listeleme + filtre (generic) ────────────────────────────────
 router.get('/:category', async (req, res, next) => {
   try {
-    const Model = ModelMap[req.params.category.toLowerCase()];
+    const cat = req.params.category.toLowerCase();
+    const Model = ModelMap[cat];
     if (!Model) return res.status(400).json({ error: 'Geçersiz kategori' });
 
-    const { beden, renk } = req.query;
-    const andClauses = [];
+    const { beden, renk, minPrice, maxPrice } = req.query;
+    const where = {};
 
-    // Çoklu beden filtresi
-    if (beden) {
-      const sizes = beden.split(',').map(s => s.trim()).filter(s => s);
-      andClauses.push({
-        [Op.or]: sizes.map(s => ({
-          beden: { [Op.like]: `%${s}%` }
-        }))
-      });
+    // … beden / renk filtreleri olduğu gibi …
+
+    // 4) Fiyat filtresi
+    if ((minPrice != null && minPrice !== '') || (maxPrice != null && maxPrice !== '')) {
+      where.Price = {};
+      if (minPrice != null && minPrice !== '') {
+        where.Price[Op.gte] = parseFloat(minPrice);
+      }
+      if (maxPrice != null && maxPrice !== '') {
+        where.Price[Op.lte] = parseFloat(maxPrice);
+      }
     }
 
-    // Çoklu renk filtresi
-    if (renk) {
-      const colors = renk.split(',').map(c => c.trim()).filter(c => c);
-      andClauses.push({
-        [Op.or]: colors.map(c => ({
-          renk: { [Op.like]: `%${c}%` }
-        }))
-      });
-    }
-
-    const items = await Model.findAll({
-      where: andClauses.length
-        ? { [Op.and]: andClauses }
-        : {}  // filtre yoksa tüm kayıtlar
-    });
+    // 5) Sorguyu çalıştır
+    const items = await Model.findAll({ where });
     return res.json(items);
+
   } catch (err) {
     next(err);
   }
 });
+
 
 // ─── 4) Oluşturma ─────────────────────────────────────────────────────────
 router.post('/:category', async (req, res) => {

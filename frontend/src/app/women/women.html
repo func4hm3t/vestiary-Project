@@ -4,44 +4,8 @@
   <aside class="hidden lg:block w-64 bg-white border-r border-gray-200 p-4 overflow-auto"
     style="max-height: calc(100vh - 64px);">
     <!-- Her bir filter section detail/summary ile collapsible -->
+
     <details class="mb-6" open>
-      <summary
-        class="flex justify-between items-center cursor-pointer font-semibold text-gray-800 hover:text-amber-600">
-        <span>Kategori</span>
-        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-      </summary>
-
-      <div class="mt-4 space-y-4">
-        <div class="relative text-gray-400">
-          <input type="text" placeholder="Kategoride Ara"
-            class="w-full pl-8 pr-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-amber-400" />
-          <svg class="w-4 h-4 absolute left-2 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
-          </svg>
-        </div>
-
-        <ul class="space-y-2 text-sm text-gray-700">
-          <li class="flex items-center">
-            <input id="cat-atlet" type="checkbox" class="w-4 h-4 text-amber-500 border-gray-300 rounded" />
-            <label for="cat-atlet" class="ml-2 select-none">Atlet</label>
-          </li>
-          <li class="flex items-center">
-            <input id="cat-bermuda" type="checkbox" class="w-4 h-4 text-amber-500 border-gray-300 rounded" />
-            <label for="cat-bermuda" class="ml-2 select-none">Bermuda</label>
-          </li>
-          <!-- diğer kategoriler... -->
-        </ul>
-
-        <button class="text-xs font-medium text-amber-600 hover:underline">
-          + Daha fazla göster
-        </button>
-      </div>
-    </details>
-
-    <details class="mb-6">
       <summary
         class="flex justify-between items-center cursor-pointer font-semibold text-gray-800 hover:text-amber-600">
         <span>Beden</span>
@@ -77,7 +41,7 @@
       </div>
     </details>
 
-    <details class="mb-6">
+    <details class="mb-6" open>
       <summary
         class="flex justify-between items-center cursor-pointer font-semibold text-gray-800 hover:text-amber-600">
         <span>Renk</span>
@@ -113,18 +77,34 @@
       </div>
     </details>
 
-    <details class="mb-4">
-      <summary
-        class="flex justify-between items-center cursor-pointer font-semibold text-gray-800 hover:text-amber-600">
-        <span>Kalıp</span>
-        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-      </summary>
-      <div class="mt-4">
-        <!-- İçerik -->
-      </div>
-    </details>
+     <details open class="mb-6">
+    <summary class="flex justify-between items-center cursor-pointer font-semibold">
+      <span>Fiyat</span>
+    </summary>
+    <div class="mt-4 space-y-2">
+      <input type="number"
+             #minBox
+             placeholder="Min ₺"
+             class="w-full p-2 border rounded"
+             [value]="minPrice"
+             (input)="onMinPriceChange(minBox.value)" />
+
+      <input type="number"
+             #maxBox
+             placeholder="Max ₺"
+             class="w-full p-2 border rounded"
+             [value]="maxPrice"
+             (input)="onMaxPriceChange(maxBox.value)" />
+
+      <button type="button"
+              class="w-full mt-2 bg-amber-600 text-white py-2 rounded hover:bg-amber-700"
+              (click)="applyPriceFilter()">
+        Getir
+      </button>
+    </div>
+  </details>
+
+
   </aside>
 
 
