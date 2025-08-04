@@ -1,7 +1,7 @@
 // routes/productRoutes.js
-const express = require('express');
-const router = express.Router();
-const db = require('../models');
+const express  = require('express');
+const router   = express.Router();
+const db       = require('../models');
 const { Op, fn, col } = require('sequelize');
 
 const ModelMap = {
@@ -9,14 +9,17 @@ const ModelMap = {
   kadin: db.KadinProduct
 };
 
-// ─── 1) Distinct 'beden' değerleri ───────────────────────────────────────
+/**
+ * 1) Distinct beden değerleri
+ */
 router.get('/:category/sizes', async (req, res, next) => {
   try {
-    const Model = ModelMap[req.params.category.toLowerCase()];
+    const key = req.params.category.toLowerCase();
+    const Model = ModelMap[key];
     if (!Model) return res.status(400).json({ error: 'Geçersiz kategori' });
 
     const rows = await Model.findAll({
-      attributes: [[fn('DISTINCT', col('beden')), 'beden']],
+      attributes: [[ fn('DISTINCT', col('beden')), 'beden' ]],
       where: { beden: { [Op.ne]: null } }
     });
     return res.json(rows.map(r => r.get('beden')));
@@ -25,14 +28,17 @@ router.get('/:category/sizes', async (req, res, next) => {
   }
 });
 
-// ─── 2) Distinct 'renk' değerleri ────────────────────────────────────────
+/**
+ * 2) Distinct renk değerleri
+ */
 router.get('/:category/colors', async (req, res, next) => {
   try {
-    const Model = ModelMap[req.params.category.toLowerCase()];
+    const key = req.params.category.toLowerCase();
+    const Model = ModelMap[key];
     if (!Model) return res.status(400).json({ error: 'Geçersiz kategori' });
 
     const rows = await Model.findAll({
-      attributes: [[fn('DISTINCT', col('renk')), 'renk']],
+      attributes: [[ fn('DISTINCT', col('renk')), 'renk' ]],
       where: { renk: { [Op.ne]: null } }
     });
     return res.json(rows.map(r => r.get('renk')));
@@ -41,19 +47,33 @@ router.get('/:category/colors', async (req, res, next) => {
   }
 });
 
-// ─── 3) Ürün listeleme + filtre (generic) ────────────────────────────────
+/**
+ * 3) Ürün listeleme + filtreler
+ */
 router.get('/:category', async (req, res, next) => {
   try {
-    const cat = req.params.category.toLowerCase();
-    const Model = ModelMap[cat];
+    const key = req.params.category.toLowerCase();
+    const Model = ModelMap[key];
     if (!Model) return res.status(400).json({ error: 'Geçersiz kategori' });
 
     const { beden, renk, minPrice, maxPrice } = req.query;
+
+    // Basit bir where objesi inşa edelim
     const where = {};
 
-    // … beden / renk filtreleri olduğu gibi …
+    // --- multi-bedens ---
+    if (beden) {
+      const arr = beden.split(',').map(s => s.trim()).filter(Boolean);
+      where.beden = { [Op.in]: arr };
+    }
 
-    // 4) Fiyat filtresi
+    // --- multi-renkler ---
+    if (renk) {
+      const arr = renk.split(',').map(c => c.trim()).filter(Boolean);
+      where.renk = { [Op.in]: arr };
+    }
+
+    // --- fiyat aralığı ---
     if ((minPrice != null && minPrice !== '') || (maxPrice != null && maxPrice !== '')) {
       where.Price = {};
       if (minPrice != null && minPrice !== '') {
@@ -64,24 +84,26 @@ router.get('/:category', async (req, res, next) => {
       }
     }
 
-    // 5) Sorguyu çalıştır
+    // (Debug) Gelen filtreyi görmek istersen:
+    // console.log('WHERE OBJ:', JSON.stringify(where, null, 2));
+
     const items = await Model.findAll({ where });
     return res.json(items);
-
   } catch (err) {
     next(err);
   }
 });
 
-
-// ─── 4) Oluşturma ─────────────────────────────────────────────────────────
+/**
+ * 4) Oluşturma
+ */
 router.post('/:category', async (req, res) => {
-  console.log('🔔 POST /api/products/' + req.params.category, req.body);
-  const Model = ModelMap[req.params.category.toLowerCase()];
-  if (!Model) return res.status(400).json({ error: 'Geçersiz kategori' });
-
-  const { title, description, price, imageUrl, beden, renk } = req.body;
   try {
+    const key = req.params.category.toLowerCase();
+    const Model = ModelMap[key];
+    if (!Model) return res.status(400).json({ error: 'Geçersiz kategori' });
+
+    const { title, description, price, imageUrl, beden, renk } = req.body;
     const item = await Model.create({
       Title: title,
       Description: description,
@@ -92,31 +114,45 @@ router.post('/:category', async (req, res) => {
     });
     return res.status(201).json(item);
   } catch (err) {
-    console.error('Ürün oluşturma hatası:', err);
+    console.error(err);
     return res.status(500).json({ error: err.message });
   }
 });
 
-// ─── 5) Güncelleme ────────────────────────────────────────────────────────
-router.put('/:category/:id', async (req, res) => {
-  const Model = ModelMap[req.params.category.toLowerCase()];
-  if (!Model) return res.status(400).json({ error: 'Geçersiz kategori' });
+/**
+ * 5) Güncelleme
+ */
+router.put('/:category/:id', async (req, res, next) => {
+  try {
+    const key = req.params.category.toLowerCase();
+    const Model = ModelMap[key];
+    if (!Model) return res.status(400).json({ error: 'Geçersiz kategori' });
 
-  const [updated] = await Model.update(req.body, {
-    where: { Id: req.params.id }
-  });
-  return updated ? res.sendStatus(204) : res.sendStatus(404);
+    const [updated] = await Model.update(req.body, {
+      where: { Id: req.params.id }
+    });
+    return updated ? res.sendStatus(204) : res.sendStatus(404);
+  } catch (err) {
+    next(err);
+  }
 });
 
-// ─── 6) Silme ──────────────────────────────────────────────────────────────
-router.delete('/:category/:id', async (req, res) => {
-  const Model = ModelMap[req.params.category.toLowerCase()];
-  if (!Model) return res.status(400).json({ error: 'Geçersiz kategori' });
+/**
+ * 6) Silme
+ */
+router.delete('/:category/:id', async (req, res, next) => {
+  try {
+    const key = req.params.category.toLowerCase();
+    const Model = ModelMap[key];
+    if (!Model) return res.status(400).json({ error: 'Geçersiz kategori' });
 
-  const deleted = await Model.destroy({
-    where: { Id: req.params.id }
-  });
-  return deleted ? res.sendStatus(204) : res.sendStatus(404);
+    const deleted = await Model.destroy({
+      where: { Id: req.params.id }
+    });
+    return deleted ? res.sendStatus(204) : res.sendStatus(404);
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
