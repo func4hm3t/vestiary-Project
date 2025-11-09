@@ -69,6 +69,5 @@ export class AuthService {
     this._role = null;
     this._username = null;
     localStorage.clear();
-    // istersen backend’e logout isteği de tetikleyebilirsin
   }
 }

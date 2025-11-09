@@ -54,7 +54,6 @@ export class Favorites implements OnInit {
 
   addToCart(p: Product) {
     this.cartSvc.add(p);
-    // this.router.navigate(['/cart']);
   }
 
   removeFavorite(p: Product) {
